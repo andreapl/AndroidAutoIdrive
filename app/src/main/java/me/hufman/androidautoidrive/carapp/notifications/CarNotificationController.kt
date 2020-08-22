@@ -12,6 +12,7 @@ interface CarNotificationController {
 	 */
 	fun clear(notification: CarNotification)
 	fun action(notification: CarNotification, actionTitle: String)
+	fun reply(notification: CarNotification, actionTitle: String, reply: String)
 }
 
 class CarNotificationControllerIntent(val context: Context): CarNotificationController {
@@ -34,4 +35,14 @@ class CarNotificationControllerIntent(val context: Context): CarNotificationCont
 		)
 	}
 
+	override fun reply(notification: CarNotification, actionTitle: String, reply: String) {
+		Log.i(TAG, "Sending reply to custom action ${notification.key}:$actionTitle")
+		context.sendBroadcast(Intent(INTENT_INTERACTION)
+				.setPackage(context.packageName)
+				.putExtra(NotificationListenerServiceImpl.EXTRA_INTERACTION, NotificationListenerServiceImpl.EXTRA_INTERACTION_REPLY)
+				.putExtra(NotificationListenerServiceImpl.EXTRA_KEY, notification.key)
+				.putExtra(NotificationListenerServiceImpl.EXTRA_ACTION, actionTitle)
+				.putExtra(NotificationListenerServiceImpl.EXTRA_REPLY, reply)
+		)
+	}
 }
